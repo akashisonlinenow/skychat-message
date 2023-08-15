@@ -11,11 +11,12 @@ import { useRouter } from "next/navigation";
 import Input from "@/app/components/inputs/Input";
 import AuthSocialButton from './AuthSocialButton';
 import Button from "@/app/components/Button";
-// import { toast } from "react-hot-toast";
+import { toast } from "react-hot-toast";
 
 type Variant = 'LOGIN' | "REGISTER"
 
 const AuthForm = () => {
+    const router = useRouter();
     const [variant, setVariant] = useState<Variant>('LOGIN');
     const [isLoading, setIsLoading] = useState(false);
 
@@ -46,10 +47,38 @@ const AuthForm = () => {
 
         if(variant === 'REGISTER'){
             axios.post('/api/register', data)
+            // .then(() => signIn('credentials', {
+            //     ...data,
+            //     redirect: false,
+            // }))
+            // .then((callback) => {
+            //     if (callback?.error) {
+            //     toast.error('Invalid credentials!');
+            //     }
+
+            //     if (callback?.ok) {
+            //     router.push('/conversations')
+            //     }
+            // })
+            .catch(() => toast.error('Something went wrong!'))
+            .finally(() => setIsLoading(false))
         }
 
         if(variant === 'LOGIN'){
-            // next auth sign in
+            signIn('credentials', {
+                ...data,
+                redirect: false
+            })
+            .then((callback) => {
+                if (callback?.error) {
+                    toast.error('Invalid credentials!');
+                }
+
+                if (callback?.ok && !callback?.error) {
+                    toast.success('Logged in!')
+                }
+            })
+            .finally(() => setIsLoading(false))
         }
     }
 
