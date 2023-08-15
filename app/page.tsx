@@ -2,7 +2,9 @@
 export default function Home() {
   return (
     <div>
-      Hello skychat
+      <p className="text-sky-500">
+        Hello skychat
+      </p>
     </div>
   )
 }
